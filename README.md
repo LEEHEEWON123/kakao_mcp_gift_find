@@ -61,6 +61,40 @@ python server.py
 - Health: `http://localhost:8000/health`
 - MCP: `http://localhost:8000/`
 
+## Docker 실행
+
+```bash
+cp .env.example .env
+# .env에 API 키 입력
+
+docker compose up --build
+```
+
+단독 빌드/실행:
+
+```bash
+docker build -t gift-find-mcp .
+docker run --rm -p 8000:8000 --env-file .env gift-find-mcp
+```
+
+## Railway 배포
+
+1. [Railway](https://railway.app) → **New Project** → **Deploy from GitHub repo**
+2. 레포 `kakao_mcp_gift_find` 선택 (Dockerfile 자동 감지)
+3. **Variables**에 환경변수 추가:
+
+| 변수 | 필수 |
+|------|------|
+| `NAVER_CLIENT_ID` | ✅ |
+| `NAVER_CLIENT_SECRET` | ✅ |
+| `KAKAO_REST_API_KEY` | ✅ |
+
+4. 배포 후 **Settings → Networking → Generate Domain** 으로 공개 URL 발급
+5. Health check: `https://<your-domain>/health`
+6. PlayMCP 등록 URL: `https://<your-domain>/`
+
+> Railway는 `PORT`를 자동 주입합니다. Dockerfile/uvicorn이 이를 사용합니다.
+
 ## PlayMCP 등록
 
 1. 클라우드(Railway, Render 등)에 배포
@@ -80,6 +114,8 @@ python server.py
 ## 프로젝트 구조
 
 ```
+├── Dockerfile
+├── docker-compose.yml
 ├── server.py              # FastMCP + FastAPI 엔트리포인트
 ├── src/
 │   ├── naver_shopping.py  # quick_gift API 클라이언트

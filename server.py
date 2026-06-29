@@ -8,9 +8,12 @@ import os
 from typing import Annotated, Optional
 
 import httpx
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import Field
+
+load_dotenv()
 
 _mcp = None
 _mcp_app = None
