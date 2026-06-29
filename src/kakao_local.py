@@ -1,16 +1,20 @@
-import os
 from typing import Optional
 
 import httpx
+
+from src.config import get_kakao_rest_api_key
 
 KAKAO_KEYWORD_URL = "https://dapi.kakao.com/v2/local/search/keyword.json"
 KAKAO_ADDRESS_URL = "https://dapi.kakao.com/v2/local/search/address.json"
 
 
 def _get_api_key() -> str:
-    api_key = os.environ.get("KAKAO_REST_API_KEY")
+    api_key = get_kakao_rest_api_key()
     if not api_key:
-        raise ValueError("KAKAO_REST_API_KEY 환경변수가 필요합니다.")
+        raise ValueError(
+            "KAKAO_REST_API_KEY 환경변수가 필요합니다. "
+            "Render 대시보드 Environment에 키를 등록한 뒤 재배포하세요."
+        )
     return api_key
 
 

@@ -4,6 +4,8 @@ from typing import Optional
 
 import httpx
 
+from src.config import get_naver_credentials
+
 NAVER_SHOP_URL = "https://openapi.naver.com/v1/search/shop.json"
 _TAG_RE = re.compile(r"<[^>]+>")
 
@@ -19,8 +21,7 @@ async def search_gifts(
     min_price: Optional[int] = None,
     max_price: Optional[int] = None,
 ) -> list[dict]:
-    client_id = os.environ.get("NAVER_CLIENT_ID")
-    client_secret = os.environ.get("NAVER_CLIENT_SECRET")
+    client_id, client_secret = get_naver_credentials()
     if not client_id or not client_secret:
         raise ValueError(
             "NAVER_CLIENT_ID, NAVER_CLIENT_SECRET 환경변수가 필요합니다."

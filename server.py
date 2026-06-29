@@ -32,7 +32,13 @@ app.add_middleware(
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "service": "gift-find-mcp"}
+    from src.config import config_status
+
+    return {
+        "status": "healthy",
+        "service": "gift-find-mcp",
+        "config": config_status(),
+    }
 
 
 @app.get("/.well-known/mcp")
