@@ -142,7 +142,7 @@ def _register_tools(mcp):
         address: Annotated[
             str,
             Field(
-                description="받는 사람 집 주소 또는 랜드마크 (예: '서울 강남구 역삼동', '강남역')"
+                description="받는 사람 집 주소, 아파트명, 또는 랜드마크 (예: '압구정 현대아파트', '강남역')"
             ),
         ],
         store_query: Annotated[

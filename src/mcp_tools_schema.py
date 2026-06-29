@@ -56,7 +56,7 @@ def get_mcp_tools_list() -> list[dict]:
                 "properties": {
                     "address": {
                         "type": "string",
-                        "description": "받는 사람 집 주소 또는 랜드마크 (예: '서울 강남구 역삼동', '강남역')",
+                        "description": "받는 사람 집 주소, 아파트명, 또는 랜드마크 (예: '압구정 현대아파트', '강남역', '서울 강남구 역삼동')",
                     },
                     "store_query": {
                         "type": "string",
