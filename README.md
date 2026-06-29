@@ -4,12 +4,12 @@
 
 ## 데모 시나리오
 
-> **유저:** "베프 생일인데 3만원대 감성 선물, 오늘 전달"
+> **유저:** "베프 생일인데 3만원대 감성 선물, 걔 집 강남역 근처, 오늘 전달"
 
 | 단계 | 툴 | 동작 |
 |------|-----|------|
 | ① | `quick_gift` | 네이버 쇼핑 실검색 TOP3 (가격·링크) |
-| ② | `find_gift_pickup` | "강남역 꽃집" 근처 3곳 (카카오맵) |
+| ② | `find_gift_pickup` | 받는 사람 집 주소 기준 픽업 매장 3곳 (거리·카카오맵) |
 
 ## Tools
 
@@ -26,14 +26,18 @@
 ```
 
 ### `find_gift_pickup`
-카카오 [로컬 키워드 검색 API](https://developers.kakao.com/docs/ko/local/dev-guide)로 근처 픽업 매장을 찾습니다.
+받는 사람 **집 주소(또는 랜드마크)** 를 기준으로 카카오 [로컬 API](https://developers.kakao.com/docs/ko/local/dev-guide)로 픽업 매장을 찾습니다.
 
 ```json
 {
-  "query": "강남역 꽃집",
-  "limit": 3
+  "address": "서울 강남구 강남역",
+  "store_query": "꽃집",
+  "limit": 3,
+  "radius_m": 2000
 }
 ```
+
+응답에 **집에서 거리(`distance_label`)**, 카카오맵 링크가 포함됩니다.
 
 ## API 키 발급
 

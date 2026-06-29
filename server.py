@@ -77,7 +77,6 @@ async def root():
 
 
 def _register_tools(mcp):
-    from src.kakao_local import search_pickup_stores
     from src.naver_shopping import search_gifts
 
     @mcp.tool(
@@ -128,36 +127,54 @@ def _register_tools(mcp):
 
     @mcp.tool(
         description=(
-            "[픽업] 카카오 로컬 키워드 검색으로 근처 선물 픽업 매장 찾기. "
-            "매장명·주소·전화·카카오맵 링크 반환. "
-            "트리거: 오늘 전달, 당일 픽업, 근처 매장, 픽업"
+            "[픽업] 받는 사람 집 주소 기준 오프라인 픽업 매장 검색. "
+            "집에서 거리·매장명·주소·전화·카카오맵 링크 반환. "
+            "트리거: 오늘 전달, 당일 픽업, 집 근처 매장, 픽업"
         )
     )
     async def find_gift_pickup(
-        query: Annotated[
-            str, Field(description="검색 키워드 (예: '강남역 꽃집', '홍대 베이커리')")
+        address: Annotated[
+            str,
+            Field(
+                description="받는 사람 집 주소 또는 랜드마크 (예: '서울 강남구 역삼동', '강남역')"
+            ),
         ],
+        store_query: Annotated[
+            str, Field(description="찾을 매장 종류 (예: '꽃집', '케이크', '베이커리')")
+        ] = "꽃집",
         limit: Annotated[int, Field(description="매장 개수", ge=1, le=10)] = 3,
+        radius_m: Annotated[
+            int, Field(description="집 주소 기준 검색 반경 (미터)", ge=100, le=20000)
+        ] = 2000,
     ) -> dict:
-        """카카오 로컬 API로 근처 픽업 가능 매장을 검색합니다."""
+        """받는 사람 주소를 기준으로 픽업 가능한 오프라인 매장을 검색합니다."""
+        from src.kakao_local import search_pickup_near_address
+
         try:
-            stores = await search_pickup_stores(query, limit=limit)
+            result = await search_pickup_near_address(
+                address,
+                store_query,
+                limit=limit,
+                radius=radius_m,
+            )
         except httpx.HTTPStatusError as e:
             return {
                 "error": f"카카오 API 오류: {e.response.status_code}",
-                "query": query,
+                "address": address,
+                "store_query": store_query,
             }
         except ValueError as e:
-            return {"error": str(e), "query": query}
+            return {"error": str(e), "address": address, "store_query": store_query}
 
+        stores = result["stores"]
+        geocoded = result["geocoded_address"]
         return {
-            "query": query,
+            **result,
             "count": len(stores),
-            "stores": stores,
             "message": (
-                f"'{query}' 근처 픽업 매장 {len(stores)}곳"
+                f"'{geocoded}' 기준 {radius_m}m 이내 {store_query} {len(stores)}곳"
                 if stores
-                else f"'{query}' 검색 결과가 없습니다."
+                else f"'{geocoded}' 근처 {store_query} 매장이 없습니다."
             ),
         }
 
