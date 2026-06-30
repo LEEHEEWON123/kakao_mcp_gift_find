@@ -1,5 +1,15 @@
-MCP_SERVER_INSTRUCTIONS = """\
-선물 찾기 MCP 서버입니다. 사용자가 선물, 생일, 기념일, 당일 전달 등을 언급하면 아래 도구를 활용하세요.
+SERVICE_NAME = "집 주위 선물찾기"
+
+TOOL_ANNOTATIONS = {
+    "title": SERVICE_NAME,
+    "readOnlyHint": True,
+    "destructiveHint": False,
+    "idempotentHint": True,
+    "openWorldHint": True,
+}
+
+MCP_SERVER_INSTRUCTIONS = f"""\
+{SERVICE_NAME} MCP 서버입니다. 사용자가 선물, 생일, 기념일, 당일 전달 등을 언급하면 아래 도구를 활용하세요.
 
 1. quick_gift — 온라인 선물 추천 (네이버 쇼핑 실검색 TOP3, 가격·링크)
 2. find_gift_pickup — 받는 사람 주소 기준 픽업 매장 검색 (거리·카카오맵)
@@ -16,10 +26,14 @@ def get_mcp_tools_list() -> list[dict]:
         {
             "name": "quick_gift",
             "description": (
-                "네이버 쇼핑 실검색으로 선물 상품 TOP3를 추천합니다. "
-                "가격대 필터링이 가능합니다. "
+                f"[{SERVICE_NAME}] 네이버 쇼핑 실검색으로 선물 상품 TOP3를 추천합니다. "
+                "가격대 필터링이 가능하며 가격·링크·쇼핑몰명을 반환합니다. "
                 "트리거: 온라인 선물, 쇼핑, 가격대 추천, 네이버 검색"
             ),
+            "annotations": {
+                **TOOL_ANNOTATIONS,
+                "title": f"{SERVICE_NAME} - 온라인 선물 추천",
+            },
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -47,10 +61,15 @@ def get_mcp_tools_list() -> list[dict]:
         {
             "name": "find_gift_pickup",
             "description": (
-                "받는 사람 집 주소(또는 랜드마크) 기준으로 픽업 가능한 오프라인 매장을 찾습니다. "
+                f"[{SERVICE_NAME}] 받는 사람 집 주소(또는 랜드마크) 기준으로 "
+                "픽업 가능한 오프라인 매장을 찾습니다. "
                 "집에서 거리, 매장명, 주소, 전화, 카카오맵 링크를 반환합니다. "
                 "트리거: 오늘 전달, 당일 픽업, 집 근처 매장, 픽업"
             ),
+            "annotations": {
+                **TOOL_ANNOTATIONS,
+                "title": f"{SERVICE_NAME} - 픽업 매장 검색",
+            },
             "inputSchema": {
                 "type": "object",
                 "properties": {

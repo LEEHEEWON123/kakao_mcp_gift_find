@@ -83,14 +83,20 @@ async def root():
 
 
 def _register_tools(mcp):
+    from src.mcp_tools_schema import SERVICE_NAME, TOOL_ANNOTATIONS
     from src.naver_shopping import search_gifts
 
     @mcp.tool(
+        title=f"{SERVICE_NAME} - 온라인 선물 추천",
         description=(
-            "[온라인] 네이버 쇼핑 실검색 TOP3 선물 추천. "
+            f"[{SERVICE_NAME}] 네이버 쇼핑 실검색 TOP3 선물 추천. "
             "가격·링크·쇼핑몰명 반환. "
             "트리거: 선물 추천, 가격대, 온라인 구매, 네이버 쇼핑"
-        )
+        ),
+        annotations={
+            **TOOL_ANNOTATIONS,
+            "title": f"{SERVICE_NAME} - 온라인 선물 추천",
+        },
     )
     async def quick_gift(
         query: Annotated[str, Field(description="검색 키워드 (예: '감성 선물', '생일 케이크')")],
@@ -132,11 +138,16 @@ def _register_tools(mcp):
         }
 
     @mcp.tool(
+        title=f"{SERVICE_NAME} - 픽업 매장 검색",
         description=(
-            "[픽업] 받는 사람 집 주소 기준 오프라인 픽업 매장 검색. "
+            f"[{SERVICE_NAME}] 받는 사람 집 주소 기준 오프라인 픽업 매장 검색. "
             "집에서 거리·매장명·주소·전화·카카오맵 링크 반환. "
             "트리거: 오늘 전달, 당일 픽업, 집 근처 매장, 픽업"
-        )
+        ),
+        annotations={
+            **TOOL_ANNOTATIONS,
+            "title": f"{SERVICE_NAME} - 픽업 매장 검색",
+        },
     )
     async def find_gift_pickup(
         address: Annotated[
